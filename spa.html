@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>SPA Chapter 1 section 1.2.5</title>
+  <style type="text/css">
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #777;
+    }
+    #spa {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      bottom: 8px;
+      right: 8px;
+      border-radius: 8px 8px 0 8px;
+      background: #fff;
+    }
+    .spa-slider{
+      position: absolute;
+      bottom: 0;
+      right: 2px;
+      width: 300px;
+      height: 16px;
+      cursor: pointer;
+      border-radius: 8px 0 0 0;
+      background: #f00;
+    }
+  </style>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    //JSLintの設定?
+    /*jslint browser        : true, continu  : true,
+      devel  : true, indent : 2,    maxerr   : 50,
+      newcap : true, nomen  : true, plusplus : true,
+      regexp : true, sloppy : true, vars     : true,
+      white  : true
+    */
+    /*global jQuery spa:true */
+    //モジュール/spa/
+    //チャットスライダー
+    var spa = (function($){
+      //モジュールスコープ変数
+      //定数
+      //モジュール構成地はconfigMapに
+      //状態値はstateMap(?)に格納する
+      var configMap = {
+        extended_height : 434,
+        extended_title : 'Click to retract',
+        retracted_height : 16,
+        retracted_title : 'Click to extend',
+        template_html : '<div class="spa-slider"></div>'
+      },
+      //その他のモジュールスコープ変数
+      $chatslider, toggleSlider, onClickSlider, initModule;
+
+      toggleSlider = function(){
+        var slider_height = $chatslider.height();
+        //格納されている場合は拡大する
+        if(slider_height === configMap.retracted_height){
+          $chatslider.animate({height : configMap.extended_height}).attr('title', configMap.extended_title);
+          return true;
+        }
+        //拡大されている場合は格納する
+        else if(slider_height === configMap.extended_height){
+          $chatslider.animate({height : configMap.retracted_height}).attr('title', configMap.retracted_title);
+          return true;
+        }
+        //移行中の場合は何もしない
+        return false;
+      }
+      //イベントハンドラ /onClickSlider/
+      //クリックイベントを受け取り、toggleSliderを呼び出す
+      onClickSlider = function(event){
+        toggleSlider();
+        return false;
+      };
+      //パブリックメソッド /initModule/
+      //初期状態を設定
+      initModule = function($container){
+        //HTMLをレンダリング
+        $container.html(configMap.template_html);
+        $chatslider = $container.find('.spa-slider');
+        //スライダーの高さとタイトルを初期化
+        //ユーザクリックイベントをイベントハンドラにバインド
+        $chatslider.attr('title', configMap.retracted_title).click(onClickSlider);
+        return true;
+      };
+      return {initModule : initModule}
+    }(jQuery));
+    //DOMの準備ができたらspaを開始
+    jQuery(document).ready(
+      function(){spa.initModule(jQuery('#spa'));}
+    );
+
+  </script>
+</head>
+<body>
+  <div id="spa"></div>
+</body>
+</html>
